@@ -252,7 +252,7 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
         Object.keys(data).forEach(function (key) {
 
             let result = data[key].findIndex(item => {
-                return item.GON === filter;
+                return item.GON.toUpperCase() === filter.toUpperCase();
             });
             if (result !== -1) theFinal.push(data[key][result]);
 
