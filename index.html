@@ -25,6 +25,78 @@
             text-decoration: none
         }
     </style>
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            position: relative;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 0;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+            -webkit-animation-name: animatetop;
+            -webkit-animation-duration: 0.4s;
+            animation-name: animatetop;
+            animation-duration: 0.4s
+        }
+
+        /* Add Animation */
+        @-webkit-keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        @keyframes animatetop {
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
+        }
+
+        /* The Close Button */
+        .close {
+            color: white;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .modal-body {padding: 2px 16px;}
+
+        .modal-footer {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <pre>
@@ -49,6 +121,18 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 <pre id="out"></pre>
 <div id="htmlout"></div>
 <br/>
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="current_search"></div>
+    </div>
+
+</div>
+
+
 <!-- uncomment the next line here and in xlsxworker.js for encoding support -->
 <script src="dist/cpexcel.js"></script>
 <script src="shim.js"></script>
@@ -72,6 +156,7 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 
     var global_wb;
     var output = "";
+    var theFinal = [];
 
     var process_wb = (function () {
         var OUT = document.getElementById('out');
@@ -154,6 +239,8 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
         if (global_wb) process_wb(global_wb);
     };
 
+    var current_search = document.getElementById('current_search');
+
     var b64it = () => {
         let text = document.getElementById('b64data');
 
@@ -161,7 +248,6 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 
         let data = JSON.parse(output);
 
-        let theFinal = [];
 
         Object.keys(data).forEach(function (key) {
 
@@ -172,9 +258,48 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 
         });
 
-        alert(JSON.stringify(theFinal));
+        var a = 'Thông tin đơn hàng <br>';
+
+        for (var i = 0; i < theFinal.length; i++){
+
+            var obj = theFinal[i];
+            for (var key in obj){
+                var value = obj[key];
+                a += ("<br> - " + key + ": " + value);
+            }
+        }
+
+        current_search.innerHTML += a;
+
+        modal.style.display = "block";
+
         return theFinal;
     };
+
+    // Get the modal
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+        theFinal = [];
+        current_search.innerHTML = '';
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            theFinal = [];
+            current_search.innerHTML = '';
+        }
+    }
 
     var do_file = (function () {
         var rABS = typeof FileReader !== "undefined" && (FileReader.prototype || {}).readAsBinaryString;
