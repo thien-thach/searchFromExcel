@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<!-- xlsx.js (C) 2013-present  SheetJS http://sheetjs.com -->
-<!-- vim: set ts=2: -->
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>SheetJS Live Demo</title>
+    <title>GIC Export Form</title>
     <style>
         #drop {
             border: 2px dashed #bbb;
@@ -49,7 +47,7 @@
             margin: auto;
             padding: 0;
             border: 1px solid #888;
-            width: 80%;
+            /*width: 80%;*/
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             -webkit-animation-name: animatetop;
             -webkit-animation-duration: 0.4s;
@@ -139,7 +137,7 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 <div id="myModal" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content">
+    <div class="modal-content" style="background-image: url(images/background_gic.png); background-size:cover">
         <span class="close">&times;</span>
         <div id="current_search"></div>
     </div>
@@ -155,16 +153,9 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
 
 <script>
-    /*jshint browser:true */
-    /* eslint-env browser */
-    /* eslint no-use-before-define:0 */
-    /*global Uint8Array, Uint16Array, ArrayBuffer */
-    /*global XLSX */
     var X = XLSX;
     var XW = {
-        /* worker message */
         msg: 'xlsx',
-        /* worker scripts */
         worker: './xlsxworker.js'
     };
 
@@ -262,28 +253,23 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 
         let data = JSON.parse(output);
 
-
         Object.keys(data).forEach(function (key) {
-
             let result = data[key].findIndex(item => {
                 return item.GON.toUpperCase() === filter.toUpperCase();
             });
             if (result !== -1) theFinal.push(data[key][result]);
-
         });
-
 
         var a;
         if (theFinal.length !== 0) {
-            a = 'Thông tin đơn hàng <br>';
+            a = '';
         } else {
             a = 'Không tìm ra đơn hàng với GIC ORDER NUMBER trên.';
         }
 
-        for (var i = 0; i < theFinal.length; i++) {
-            var obj = theFinal[i];
-            for (var key in obj) {
-                var value = obj[key];
+        for (let i = 0; i < theFinal.length; i++) {
+            for (let key in theFinal[i]) {
+                let value = theFinal[i][key];
                 a += ("<br> - " + key + ": " + value);
             }
         }
@@ -297,9 +283,6 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 
     // Get the modal
     var modal = document.getElementById('myModal');
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
 
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
