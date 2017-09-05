@@ -36,8 +36,8 @@
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
 
         /* Modal Content */
@@ -47,8 +47,8 @@
             margin: auto;
             padding: 0;
             border: 1px solid #888;
-            /*width: 80%;*/
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            width: 50%;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
             -webkit-animation-name: animatetop;
             -webkit-animation-duration: 0.4s;
             animation-name: animatetop;
@@ -57,25 +57,13 @@
 
         /* Add Animation */
         @-webkit-keyframes animatetop {
-            from {
-                top: -300px;
-                opacity: 0
-            }
-            to {
-                top: 0;
-                opacity: 1
-            }
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
         }
 
         @keyframes animatetop {
-            from {
-                top: -300px;
-                opacity: 0
-            }
-            to {
-                top: 0;
-                opacity: 1
-            }
+            from {top:-300px; opacity:0}
+            to {top:0; opacity:1}
         }
 
         /* The Close Button */
@@ -95,12 +83,16 @@
 
         .modal-header {
             padding: 2px 16px;
-            background-color: #5cb85c;
-            color: white;
+            margin-bottom: 70px;
+            /*background-color: #5cb85c;*/
+            color: #f89f00;
+            text-align: right;
         }
 
         .modal-body {
             padding: 2px 16px;
+            /*background-image: url(./images/background_gic.png);*/
+            background-size: cover;
         }
 
         .modal-footer {
@@ -137,10 +129,21 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
 <div id="myModal" class="modal">
 
     <!-- Modal content -->
-    <div class="modal-content" style="background-image: url(images/background_gic.png); background-size:cover">
-        <span class="close">&times;</span>
-        <div id="current_search"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <!--<h2>GIC</h2>-->
+            <span style="float: right;"><img src="/images/logo_gic.png" alt="Icon" style="width:64px;height:64px;"></span>
+        </div>
+        <div id="current_search" class="modal-body">
+            <span style="float:left" id="customer_name">TÊN KHÁCH HÀNG: </span><span id="customer_code" style="float: right; margin-right: 15px">MÃ KHÁCH HÀNG: </span>​
+
+            <p id="customer_phone">SỐ ĐIỆN THOẠI: </p>
+            <p id="customer_address">ĐỊA CHỈ: </p>
+            <p id="customer_barcode">BARCODE: </p>
+        </div>
     </div>
+    <input type="button" id="printLabel" value="print" onclick="print();"/><br/>
 
 </div>
 
@@ -245,6 +248,11 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
     };
 
     var current_search = document.getElementById('current_search');
+    var customer_name_html = document.getElementById('customer_name');
+    var customer_code_html = document.getElementById('customer_code');
+    var customer_phone_html = document.getElementById('customer_phone');
+    var customer_address_html = document.getElementById('customer_address');
+    var customer_barcode_html = document.getElementById('customer_barcode');
 
     var b64it = () => {
         let text = document.getElementById('b64data');
@@ -261,8 +269,20 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
         });
 
         var a;
+        var customer_name;
+        var customer_code;
+        var customer_phone;
+        var customer_address;
+        var customer_barcode;
+
         if (theFinal.length !== 0) {
             a = '';
+            customer_name = 'TÊN KHÁCH HÀNG: ';
+            customer_code = 'MÃ KHÁCH HÀNG: ';
+            customer_phone = 'SỐ ĐIỆN THOẠI: ';
+            customer_address = 'ĐỊA CHỈ: ';
+            customer_barcode = 'BARCODE: ';
+
         } else {
             a = 'Không tìm ra đơn hàng với GIC ORDER NUMBER trên.';
         }
@@ -270,11 +290,30 @@ Use readAsBinaryString: (when available) <input type="checkbox" name="userabs" c
         for (let i = 0; i < theFinal.length; i++) {
             for (let key in theFinal[i]) {
                 let value = theFinal[i][key];
+                if (key ==='HO TEN NGUOI NHAN'){
+                    customer_name = value;
+                }
+                if (key ==='GON'){
+                    customer_code = value;
+                }
+                if (key ==='SDT NGUOI NHAN'){
+                    customer_phone = value;
+                }
+                if (key ==='DIA CHI NHAN HANG'){
+                    customer_address = value;
+                }
+
                 a += ("<br> - " + key + ": " + value);
+
             }
         }
 
-        current_search.innerHTML += a;
+//        current_search.innerHTML += a;
+        customer_name_html.innerHTML += customer_name;
+        customer_code_html.innerHTML += customer_code;
+        customer_phone_html.innerHTML += customer_phone;
+        customer_address_html.innerHTML += customer_address;
+
 
         modal.style.display = "block";
 
